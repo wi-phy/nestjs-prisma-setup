@@ -84,7 +84,6 @@ yarn prisma studio
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -94,7 +93,8 @@ async function bootstrap() {
     app.enableCors();
   }
 
-  /** Global validation pipe
+  /**
+   * Global validation pipe
    * This will validate incoming requests and transform them to DTOs
    * It will also strip properties that are not defined in the DTOs
    * and throw an error if any non-whitelisted properties are present
@@ -108,15 +108,8 @@ async function bootstrap() {
     }),
   );
 
-  // Swagger setup if needed
-  const config = new DocumentBuilder()
-    .setTitle('NestJS Gamecounter API')
-    .setDescription('Base URL: http://localhost:3000')
-    .addServer('http://localhost:3000')
-    .setVersion('1.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  // Set a global prefix for all routes
+  app.setGlobalPrefix('api');
 
   // Set global prefix for API routes
   await app.listen(process.env.PORT ?? 3000);
